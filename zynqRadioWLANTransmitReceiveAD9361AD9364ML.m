@@ -1,62 +1,6 @@
-%% 802.11a Transmission and Reception Using Analog Devices AD9361/AD9364
-% This example shows how to transmit and receive WLAN packets on a single
-% SDR platform, using Xilinx(R) Zynq-Based Radio Support Package with
-% MATLAB(R) and WLAN System Toolbox(TM). An image file is encoded and
-% packed into WLAN packets for transmission, and subsequently decoded on
-% reception.
-%
-% Refer to the <matlab:sdrzdoc('sdrzspsetup') Getting Started>
-% documentation for details on configuring your host computer to work with
-% the Support Package for Xilinx(R) Zynq-Based Radio.
-
-% Copyright 2015-2016 The MathWorks, Inc.
-
-%% Introduction
-% You can use WLAN System Toolbox to generate standard-compliant waveforms.
-% These baseband waveforms can be upconverted for RF transmission using SDR
-% hardware such as Xilinx Zynq-Based Radio. The <matlab:sdrzdoc('sdrz_repeatedwaveformtx') Repeated Waveform Transmitter>
-% functionality with the Zynq(R) radio hardware, allows a waveform to be
-% transmitted over the air and is received using the same SDR hardware. The
-% received waveform is captured and downsampled to baseband using a Xilinx
-% Zynq-Based Radio and is decoded to recover the transmitted information as
-% shown in the following figure.
-%
-% <<SDRWLAN80211aTransceiverZynq_published.png>>
-%
-% This example imports and segments an image file into multiple MPDUs,
-% where each  MPDU includes a MAC header, a variable length frame body
-% (MSDU) and a FCS (Frame Check Sequence), which contains a 32 bit CRC. The
-% MPDUs are sequentially numbered using the sequence control field in the
-% MAC header of each MPDU. The MPDUs are passed to the PHY layer as PSDUs.
-% Each PSDU data is packed into a single NonHT, 802.11a(TM) [ <#24 1> ] WLAN
-% packet using WLAN System Toolbox. This example creates a WLAN baseband
-% waveform using the <matlab:doc('wlanWaveformGenerator') wlanWaveformGenerator> function. This function consumes multiple PSDUs
-% and processes each to form a series of PPDUs. The multiple PPDUs are
-% upconverted and the RF waveform is sent over the air using Xilinx
-% Zynq-Based radio as shown in the following figure.
-%
-% <<ZynqRadioWLANTransmitReceiveAD9361AD9364MLTransmit.png>>
-%
-% This example then captures the transmitted waveform using the same Zynq
-% radio hardware platform. The RF transmission is demodulated to baseband
-% and the received MPDUs are ordered using the sequence control field in
-% the MAC header. The information bits in multiple received MSDUs are
-% combined to recover the transmitted image. The receiver processing is
-% illustrated in the following diagram.
-%
-% <<ZynqRadioWLANTransmitReceiveAD9361AD9364MLReceive.png>>
-
+clear all; close all;
+dbstop if error;
 %% Example Setup
-% Before you run this example, perform the following steps:
-%
-% # Configure your host computer to work with the Support Package for
-% Xilinx Zynq-Based Radio. See <matlab:sdrzdoc('sdrzspsetup') Getting
-% Started> for help. 
-% # Make sure that WLAN System Toolbox is installed. You must have WLAN
-% System Toolbox license to run this example.
-%
-% When you run this example, the first thing the script does is to check
-% for WLAN System Toolbox.
 
 % Check that WLAN System Toolbox is installed, and that there is a valid license
 if isempty(ver('wlan')) % Check for WLAN System Toolbox install
